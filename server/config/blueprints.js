@@ -10,32 +10,39 @@
  */
 
 module.exports.blueprints = {
+  /***************************************************************************
+   *                                                                          *
+   * Automatically expose implicit routes for every action in your app?       *
+   *                                                                          *
+   ***************************************************************************/
+
+  actions: false,
 
   /***************************************************************************
-  *                                                                          *
-  * Automatically expose implicit routes for every action in your app?       *
-  *                                                                          *
-  ***************************************************************************/
+   *                                                                          *
+   * Automatically expose RESTful routes for your models?                     *
+   *                                                                          *
+   ***************************************************************************/
 
-  // actions: false,
-
-
-  /***************************************************************************
-  *                                                                          *
-  * Automatically expose RESTful routes for your models?                     *
-  *                                                                          *
-  ***************************************************************************/
-
-  // rest: true,
-
+  rest: true,
 
   /***************************************************************************
-  *                                                                          *
-  * Automatically expose CRUD "shortcut" routes to GET requests?             *
-  * (These are enabled by default in development only.)                      *
-  *                                                                          *
-  ***************************************************************************/
+   *                                                                          *
+   * Automatically expose CRUD "shortcut" routes to GET requests?             *
+   * (These are enabled by default in development only.)                      *
+   *                                                                          *
+   ***************************************************************************/
 
-  // shortcuts: true,
-
+  shortcuts: false,
+  prefix: '/api',
+  parseBlueprintOptions: function(req) {
+    // Get the default query options.
+    var queryOptions = req._sails.hooks.blueprints.parseBlueprintOptions(req);
+    if (req.options.blueprintAction === 'find' || req.options.blueprintAction === 'populate') {
+      if (queryOptions.criteria.limit > 40) {
+        queryOptions.criteria.limit = 20;
+      }
+    }
+    return queryOptions;
+  },
 };
